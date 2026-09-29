@@ -4,6 +4,8 @@ public class BulletBehavior : MonoBehaviour
 {
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     public float speed = 10f;
+    public GameManager gameManager;
+
     void Start()
     {
         Destroy(gameObject, 2f);
@@ -19,6 +21,7 @@ public class BulletBehavior : MonoBehaviour
     {
         if (other.CompareTag("Asteroid"))
         {
+            gameManager.AddPoint();
             Destroy(other.gameObject);
             Destroy(gameObject);
         }

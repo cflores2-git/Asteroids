@@ -8,6 +8,7 @@ public class AsteroidSpawner : MonoBehaviour
     public GameObject upperBound;
     public GameObject lowerBound;
     public float spawnInterval = 2f;
+    public float fspawnInt = 1.5f;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -52,5 +53,11 @@ public class AsteroidSpawner : MonoBehaviour
 
         Vector2 towardMiddle = -spawnPosition.normalized;
         asteroid.GetComponent<AsteroidMovement>().direction = towardMiddle + Random.insideUnitCircle*0.5f;
+    }
+    
+    public void IncreasedDifficulty()
+    {
+        CancelInvoke(nameof(SpawnAsteroid));
+        InvokeRepeating(nameof(SpawnAsteroid), 1f, fspawnInt);
     }
 }

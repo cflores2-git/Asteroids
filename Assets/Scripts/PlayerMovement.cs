@@ -14,6 +14,7 @@ public class PlayerMovement : MonoBehaviour
     public GameObject upperBound;
     public GameObject lowerBound;
     private Vector3 startPosition;
+    public GameManager gameManager;
     void Start()
     {
         startPosition = transform.position;
@@ -26,22 +27,27 @@ public class PlayerMovement : MonoBehaviour
         if (moveInput.y>0f){
             transform.position += transform.up * moveSpeed * moveInput.y * Time.deltaTime; 
         }
+        Camera camera = Camera.main;
+        float halfHeight = camera.orthographicSize;
+        float halfWidth = halfHeight * camera.aspect;
+        Vector3 center = camera.transform.position;
         Vector3 position = transform.position;
-        if (transform.position.x > rightBound.transform.position.x)
+
+        if (position.x>center.x+halfWidth)
         {
-            position.x = leftBound.transform.position.x;
+            position.x = center.x - halfWidth;
         }
-        else if  (transform.position.x < leftBound.transform.position.x)
+        else if (position.x<center.x-halfWidth)
         {
-            position.x = rightBound.transform.position.x;
+            position.x = center.x + halfWidth;
         }
-        if (transform.position.y > upperBound.transform.position.y)
+        if (position.y>center.y+halfHeight)
         {
-            position.y = lowerBound.transform.position.y;
+            position.y = center.y - halfHeight;
         }
-        else if  (transform.position.y < lowerBound.transform.position.y)
+        else if (position.y<center.y-halfHeight)
         {
-            position.y = upperBound.transform.position.y;
+            position.y = center.y + halfHeight;
         }
         transform.position = position;
     }
@@ -53,10 +59,12 @@ public class PlayerMovement : MonoBehaviour
 
     void OnFire(InputValue value)
     {
-        if (value.isPressed){
-            Instantiate(bulletPrefab, firePoint.position, transform.rotation);
+        if(value.isPressed){
+        GameObject bullet = Instantiate(bulletPrefab, firePoint.position, transform.rotation);
+        bullet.GetComponent<BulletBehavior>().gameManager = gameManager;
         }
     }
+    
 
     void OnTriggerEnter2D(Collider2D other){
         if (other.CompareTag("Asteroid"))
